@@ -51,7 +51,7 @@ enum vdd_gx_levels {
 
 static int vdd_gx_corner[] = {
 	0 + 1,				/* VDD_GX_NONE */
-	16 + 1,				/* VDD_GX_RETENTION */
+	20 + 1,				/* VDD_GX_RETENTION */
 	24 + 1,				/* VDD_GX_MIN */
 	48 + 1,				/* VDD_GX_LOWER */
 	94 + 1,				/* VDD_GX_LOW */
