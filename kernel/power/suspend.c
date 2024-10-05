@@ -16,6 +16,7 @@
 #include <linux/init.h>
 #include <linux/console.h>
 #include <linux/cpu.h>
+#include <linux/cpuidle.h>
 #include <linux/syscalls.h>
 #include <linux/gfp.h>
 #include <linux/io.h>
@@ -48,7 +49,7 @@ static const char * const mem_sleep_labels[] = {
 const char *mem_sleep_states[PM_SUSPEND_MAX];
 
 suspend_state_t mem_sleep_current = PM_SUSPEND_TO_IDLE;
-suspend_state_t mem_sleep_default = PM_SUSPEND_TO_IDLE;
+suspend_state_t mem_sleep_default = PM_SUSPEND_MAX;
 suspend_state_t pm_suspend_target_state;
 EXPORT_SYMBOL_GPL(pm_suspend_target_state);
 
@@ -88,6 +89,7 @@ static void s2idle_enter(void)
 	raw_spin_unlock_irq(&s2idle_lock);
 
 	get_online_cpus();
+	cpuidle_resume();
 
 	/* Push all the CPUs into the idle loop. */
 	wake_up_all_idle_cpus();
@@ -95,6 +97,7 @@ static void s2idle_enter(void)
 	wait_event(s2idle_wait_head,
 		   s2idle_state == S2IDLE_STATE_WAKE);
 
+	cpuidle_pause();
 	put_online_cpus();
 
 	raw_spin_lock_irq(&s2idle_lock);
